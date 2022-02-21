@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 public class Lotto {
 
 	private static final List<Integer> allNumbers = IntStream.rangeClosed(1, 45).boxed().collect(Collectors.toList());
+	public static final int PRICE = 1000;
 
 	private List<Integer> numbers;
 

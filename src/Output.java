@@ -1,52 +1,42 @@
-import java.util.Collection;
-import java.util.HashMap;
+import static java.lang.System.lineSeparator;
+
 import java.util.List;
 import java.util.Map;
 
 public class Output {
 
+	private static final StringBuilder sb = new StringBuilder();
+
 	private Output() {}
 
 	public static void printLottoNum(int numOfLotto, List<Lotto> lotteries) {
-		System.out.println(numOfLotto + "개를 구매했습니다.");
+		sb.append(numOfLotto).append("개를 구매했습니다.").append(lineSeparator());
 		for (Lotto lottery : lotteries) {
-			System.out.println(lottery.getNumbers());
+			sb.append(lottery.getNumbers()).append(lineSeparator());
 		}
+		System.out.println(sb);
+		sb.setLength(0);
 	}
 
-	public static void printResult(Map<Lotto, Integer> result) {
-		System.out.println("당첨 통계");
-		System.out.println("--------");
+	public static void printResult(Map<Rank, Integer> map, int numberOfLotteries) {
+		sb.append("당첨 통계")
+			.append(lineSeparator())
+			.append("----------")
+			.append(lineSeparator());
 
-		Map<Rank, Integer> map = new HashMap<>();
+		appendMatchedInfo(map, numberOfLotteries);
+		System.out.println(sb);
+		sb.setLength(0);
+	}
 
-		Collection<Integer> values = result.values();
-
-		for (int value : values) {
-			for (int i = 0; i < Rank.values().length; i++) {
-				if (value == Rank.values()[i].getCountOfMatch()) {
-					map.put(Rank.values()[i], map.getOrDefault(Rank.values()[i], 0) + 1);
-				}
-			}
-		}
-
+	private static void appendMatchedInfo(Map<Rank, Integer> map, int numberOfLotteries) {
 		int total = 0;
-		total += map.getOrDefault(Rank.FIFTH, 0) * Rank.FIFTH.getWinningMoney();
-		total += map.getOrDefault(Rank.THIRD, 0) * Rank.THIRD.getWinningMoney();
-		total += map.getOrDefault(Rank.SECOND, 0) * Rank.SECOND.getWinningMoney();
-		total += map.getOrDefault(Rank.FIRST, 0) * Rank.FIRST.getWinningMoney();
-
-		System.out.println(
-			"3개 일치 (" + Rank.FIFTH.getWinningMoney() + ")" + "-" + map.getOrDefault(Rank.FIFTH, 0));
-		System.out.println(
-			"4개 일치 (" + Rank.THIRD.getWinningMoney() + ")" + "-" + map.getOrDefault(Rank.THIRD, 0));
-		System.out.println(
-			"5개 일치 (" + Rank.SECOND.getWinningMoney() + ")" + "-" + map.getOrDefault(Rank.SECOND,
-				0));
-		System.out.println(
-			"6개 일치 (" + Rank.FIRST.getWinningMoney() + ")" + "-" + map.getOrDefault(Rank.FIRST, 0));
-
-		System.out.println((double) ((total - values.size() * 1000) / (values.size() * 1000)) * 100 + "%");
-
+		int i = 3;
+		for (Rank rank : map.keySet()) {
+			total += map.getOrDefault(rank, 0) * rank.getWinningMoney();
+			sb.append(i++).append("개 일치 (").append(rank.getWinningMoney()).append(")-").append(
+				map.getOrDefault(rank, 0)).append(lineSeparator());
+		}
+		sb.append(((total - numberOfLotteries * 1000) / (double) (numberOfLotteries * 1000)) * 100).append("%");
 	}
 }

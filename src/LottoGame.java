@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class LottoGame {
 		buyLotto(getInputMoney());
 		setLuckyNumbers();
 		getResult();
-		Output.printResult(result);
+		printResult();
 	}
 
 	private void init() {
@@ -25,7 +27,7 @@ public class LottoGame {
 	}
 
 	private int getInputMoney() {
-		return Input.getInputMoney("구입금액을 입력해 주세요.");
+		return Input.getInputMoney();
 	}
 
 	private void buyLotto(int inputMoney) {
@@ -57,6 +59,42 @@ public class LottoGame {
 			}
 		}
 		return countOfMatchedNum;
+	}
+
+	private void printResult() {
+		Map<Rank, Integer> map = getRankIntegerMap();
+		Output.printResult(map, lotteries.size());
+	}
+
+	private Map<Rank, Integer> getRankIntegerMap() {
+		Map<Rank, Integer> map = new EnumMap<>(Rank.class);
+		Collection<Integer> values = result.values();
+
+		initializeMap(map);
+
+		for (int value : values) {
+			findMatchedValue(map, value);
+		}
+		return map;
+	}
+
+	private void initializeMap(Map<Rank, Integer> map) {
+		map.put(Rank.FIFTH, 0);
+		map.put(Rank.THIRD, 0);
+		map.put(Rank.SECOND, 0);
+		map.put(Rank.FIRST, 0);
+	}
+
+	private void findMatchedValue(Map<Rank, Integer> map, int value) {
+		for (int i = 0; i < Rank.values().length; i++) {
+			putRankInfo(map, value, i);
+		}
+	}
+
+	private void putRankInfo(Map<Rank, Integer> map, int value, int i) {
+		if (value == Rank.values()[i].getCountOfMatch()) {
+			map.put(Rank.values()[i], map.get(Rank.values()[i]) + 1);
+		}
 	}
 
 }

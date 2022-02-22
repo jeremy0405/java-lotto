@@ -13,6 +13,20 @@ public enum Rank {
 		this.winningMoney = winningMoney;
 	}
 
+	static Rank create(int countOfMatch) {
+		switch (countOfMatch) {
+			case 3:
+				return FIFTH;
+			case 4:
+				return THIRD;
+			case 5:
+				return SECOND;
+			case 6:
+				return FIRST;
+		}
+		return null;
+	}
+
 	public int getCountOfMatch() {
 		return countOfMatch;
 	}

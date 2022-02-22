@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LottoGame {
@@ -73,7 +74,10 @@ public class LottoGame {
 		initializeMap(map);
 
 		for (int value : values) {
-			findMatchedValue(map, value);
+			Rank rank = Rank.create(value);
+			if (!Objects.isNull(rank)) {
+				map.put(rank, map.get(rank) + 1);
+			}
 		}
 		return map;
 	}
@@ -83,18 +87,6 @@ public class LottoGame {
 		map.put(Rank.THIRD, 0);
 		map.put(Rank.SECOND, 0);
 		map.put(Rank.FIRST, 0);
-	}
-
-	private void findMatchedValue(Map<Rank, Integer> map, int value) {
-		for (int i = 0; i < Rank.values().length; i++) {
-			putRankInfo(map, value, i);
-		}
-	}
-
-	private void putRankInfo(Map<Rank, Integer> map, int value, int i) {
-		if (value == Rank.values()[i].getCountOfMatch()) {
-			map.put(Rank.values()[i], map.get(Rank.values()[i]) + 1);
-		}
 	}
 
 }
